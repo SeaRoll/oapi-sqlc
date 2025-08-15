@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -31,7 +32,8 @@ func main() {
 	api.RegisterHandlers(e, api.NewStrictHandler(server, nil))
 
 	srv := http.Server{
-		Handler: e,
+		Handler:           e,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 
 	// Start the server.
@@ -50,6 +52,6 @@ func main() {
 
 	err := srv.Shutdown(shutdownCtx)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to shutdown server", "error", err)
 	}
 }
