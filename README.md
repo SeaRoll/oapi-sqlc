@@ -18,9 +18,9 @@ go generate ./...
 #### Running Tests
 
 ```sh
-docker compose up -d --wait
-go test -v ./...
-docker compose down
+docker compose -f docker-compose.ci.yml up -d --wait
+go test -v -coverpkg=./... -coverprofile cover.out ./...
+docker compose -f docker-compose.ci.yml down
 ```
 
 #### Linting Code
