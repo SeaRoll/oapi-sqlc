@@ -1,0 +1,87 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Minimal ping API server
+servers:
+  - url: http://localhost:8080
+    description: Local server
+  - url: https://api.example.com
+    description: Production server
+
+tags:
+  - name: Books
+    description: Collection of books for a library
+
+paths:
+  /api/v1/books:
+    post:
+      summary: Create a new book
+      tags:
+        - Books
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewBookDTO"
+      responses:
+        "201":
+          description: Book created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookDTO"
+components:
+  schemas:
+    NewBookDTO:
+      type: object
+      required:
+        - title
+        - author
+        - publishedDate
+      properties:
+        title:
+          type: string
+          example: "The Great Gatsby"
+          x-oapi-codegen-extra-tags:
+            validate: "required,min=1,max=255"
+        author:
+          type: string
+          example: "F. Scott Fitzgerald"
+          x-oapi-codegen-extra-tags:
+            validate: "required,min=1,max=255"
+        publishedDate:
+          type: string
+          format: date
+          example: "1925-04-10"
+          x-oapi-codegen-extra-tags:
+            validate: "required"
+    BookDTO:
+      type: object
+      required:
+        - id
+        - title
+        - author
+        - publishedDate
+      properties:
+        id:
+          type: integer
+          example: 123
+        title:
+          type: string
+          example: "The Great Gatsby"
+        author:
+          type: string
+          example: "F. Scott Fitzgerald"
+        publishedDate:
+          type: string
+          format: date
+          example: "1925-04-10"
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
